@@ -10,13 +10,21 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/helper-compilation-targets": "^7.25.9",
+    "@babel/runtime": "^7.26.0",
+    "antd-mobile": "^5.38.1",
+    "axios": "^1.7.7",
     "expo": "~52.0.7",
     "expo-status-bar": "~2.0.0",
+    "lodash": "^4.17.21",
+    "lodash.debounce": "^4.0.8",
     "react": "18.3.1",
-    "react-native": "0.76.2"
+    "react-native": "0.76.2",
+    "whatwg-url-without-unicode": "^8.0.0-3"
   },
+  "private": true,
   "devDependencies": {
-    "@babel/core": "^7.20.0"
-  },
-  "private": true
+    "babel-plugin-transform-runtime": "^6.23.0"
+  }
 }
