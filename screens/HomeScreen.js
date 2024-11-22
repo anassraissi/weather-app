@@ -16,6 +16,7 @@ import { theme } from '../theme';
 import { styles } from '../styles/Home';
 import { debounce, set } from "lodash"
 import { fetchLocation, fetchWeatherForecast } from '../api/weather';
+import { weatherImages } from '../constants';
 
 
 function HomeScreen() {
@@ -31,8 +32,7 @@ function HomeScreen() {
       days:'7',
     }).then(data=>{
       setWeather(data)
-      console.log('got forcast', data);
-      
+      console.log('weather: ', weather.forecast.forecastday);
     })
   };
   const handelSearch=(value)=>{
@@ -45,6 +45,7 @@ function HomeScreen() {
   
   const handelTextDebounce=useCallback(debounce(handelSearch,1200),[])
   const {current,location}=weather;
+ 
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
@@ -110,15 +111,15 @@ function HomeScreen() {
           {/* Weather Image */}
           <View style={styles.weatherImageContainer}>
             <Image
-              source={require('../assets/images/partlycloudy.png')}
+              source={weatherImages[current?.condition.text]}
               style={styles.weatherImage}
             />
           </View>
 
           {/* Temperature */}
           <View style={styles.temperatureContainer}>
-            <Text style={styles.temperatureText}>23°</Text>
-            <Text style={styles.weatherDescription}>Partly cloudy</Text>
+            <Text style={styles.temperatureText}>{current?.temp_c}°</Text>
+            <Text style={styles.weatherDescription}>{current?.condition.text}</Text>
           </View>
         </View>
 
@@ -129,14 +130,14 @@ function HomeScreen() {
               source={require('../assets/icons/wind.png')}
               style={styles.weatherDetailIcon}
             />
-            <Text style={styles.weatherDetailText}>22 km/h</Text>
+            <Text style={styles.weatherDetailText}>{current?.wind_kph} km/h</Text>
           </View>
           <View style={styles.weatherDetailItem}>
             <Image
               source={require('../assets/icons/drop.png')}
               style={styles.weatherDetailIcon}
             />
-            <Text style={styles.weatherDetailText}>65%</Text>
+            <Text style={styles.weatherDetailText}>{current?.humidity} %</Text>
           </View>
           <View style={styles.weatherDetailItem}>
             <Image
@@ -158,62 +159,19 @@ function HomeScreen() {
             contentContainerStyle={styles.dailyForecastScroll}
             showsHorizontalScrollIndicator={false}
           >
-            <View style={styles.dailyForecastItem}>
-              <Image
-                source={require('../assets/images/heavyrain.png')}
-                style={styles.dailyForecastIcon}
-              />
-              <Text style={styles.dailyForecastDay}>Monday</Text>
-              <Text style={styles.dailyForecastTemp}>23°</Text>
-            </View>
-            <View style={styles.dailyForecastItem}>
-              <Image
-                source={require('../assets/images/heavyrain.png')}
-                style={styles.dailyForecastIcon}
-              />
-              <Text style={styles.dailyForecastDay}>Tuesday</Text>
-              <Text style={styles.dailyForecastTemp}>23°</Text>
-            </View>
-            <View style={styles.dailyForecastItem}>
-              <Image
-                source={require('../assets/images/heavyrain.png')}
-                style={styles.dailyForecastIcon}
-              />
-              <Text style={styles.dailyForecastDay}>Wednesday</Text>
-              <Text style={styles.dailyForecastTemp}>23°</Text>
-            </View>
-            <View style={styles.dailyForecastItem}>
-              <Image
-                source={require('../assets/images/heavyrain.png')}
-                style={styles.dailyForecastIcon}
-              />
-              <Text style={styles.dailyForecastDay}>Thursday</Text>
-              <Text style={styles.dailyForecastTemp}>23°</Text>
-            </View>
-            <View style={styles.dailyForecastItem}>
-              <Image
-                source={require('../assets/images/heavyrain.png')}
-                style={styles.dailyForecastIcon}
-              />
-              <Text style={styles.dailyForecastDay}>Friday</Text>
-              <Text style={styles.dailyForecastTemp}>23°</Text>
-            </View>
-            <View style={styles.dailyForecastItem}>
-              <Image
-                source={require('../assets/images/heavyrain.png')}
-                style={styles.dailyForecastIcon}
-              />
-              <Text style={styles.dailyForecastDay}>Saturday</Text>
-              <Text style={styles.dailyForecastTemp}>23°</Text>
-            </View>
-            <View style={styles.dailyForecastItem}>
-              <Image
-                source={require('../assets/images/heavyrain.png')}
-                style={styles.dailyForecastIcon}
-              />
-              <Text style={styles.dailyForecastDay}>Sunday</Text>
-              <Text style={styles.dailyForecastTemp}>23°</Text>
-            </View>
+            {weather?.forecast?.forecastday?.map((item,index)=>{
+              return (
+                <View style={styles.dailyForecastItem}>
+                <Image
+                  source={require('../assets/images/heavyrain.png')}
+                  style={styles.dailyForecastIcon}
+                />
+                <Text style={styles.dailyForecastDay}>{item.date}</Text>
+                <Text style={styles.dailyForecastTemp}>23°</Text>
+              </View>
+                 ) 
+            })}
+
           </ScrollView>
         </View>
       </SafeAreaView>
