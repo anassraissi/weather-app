@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   Image,
@@ -10,42 +10,98 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import * as Location from 'expo-location'; // For Expo users
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 import { theme } from '../theme';
 import { styles } from '../styles/Home';
-import { debounce, set } from "lodash"
+import { debounce } from 'lodash';
 import { fetchLocation, fetchWeatherForecast } from '../api/weather';
 import { weatherImages } from '../constants';
-
+import { getData, storeData } from '../utils/AsyncStorage';
 
 function HomeScreen() {
   const [showSearch, toggleSearch] = useState(false);
   const [locations, setLocations] = useState([]);
-  const [weather,setWeather]=useState([]);
-  
+  const [weather, setWeather] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  //   setLocations([]);
+  //   setWeather({});
+  //   let cityName = 'Rabat';
+  //   getData('city').then((myCity) => {
+  //     if (myCity) {
+  //       cityName = myCity;
+  //     }
+  //     fetchWeatherForecast({ cityName, days: '7' }).then((data) => {
+  //       if (data && data.current && data.location) {
+  //         setWeather(data);
+  //       }
+  //       setLoading(false);
+  //     });
+  //   });
+  // }, []);
+
+  useEffect(() => {
+    (async () => {
+      // Request location permissions
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
+        return;
+      }
+
+      // Get the user's current location
+      let location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+
+      // Reverse geocoding to get the city name
+      let reverseGeocode = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
+      console.log(reverseGeocode);
+
+      console.log(reverseGeocode[0]?.city);
+      let cityName = reverseGeocode[0]?.city || 'Rabat'; // Default to Rabat if no city found
+
+      // Fetch weather data for the detected city
+      getData('city').then((myCity) => {
+        if (myCity=='Rabat') {
+          cityName = myCity;
+        }
+        fetchWeatherForecast({ cityName, days: '7' }).then((data) => {
+          if (data && data.current && data.location) {
+            setWeather(data);
+          }
+          setLoading(false);
+        });
+      });
+    })();
+  }, []);
+
   const handleLocation = (location) => {
-    console.log('Selected location: ' + location);
     setLocations([]);
-    fetchWeatherForecast({
-      cityName:location.name,
-      days:'7',
-    }).then(data=>{
-      setWeather(data)
-      console.log('weather: ', weather.forecast.forecastday);
-    })
+    setLoading(true);
+    fetchWeatherForecast({ cityName: location.name, days: '7' }).then((data) => {
+      if (data && data.current && data.location) {
+        setWeather(data);
+        storeData('city', location.name);
+      }
+      setLoading(false);
+    });
   };
-  const handelSearch=(value)=>{
-    if(value.length>2){
-      fetchLocation({cityName:value}).then(data=>{setLocations(data)});
-      console.log(locations);
+
+  const handelSearch = (value) => {
+    if (value.length > 2) {
+      fetchLocation({ cityName: value }).then((data) => setLocations(data));
     }
-  }
-  
-  
-  const handelTextDebounce=useCallback(debounce(handelSearch,1200),[])
-  const {current,location}=weather;
- 
+  };
+
+  const handelTextDebounce = useCallback(debounce(handelSearch, 1200), []);
+  const { current, location } = weather || {};
+
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
@@ -93,7 +149,9 @@ function HomeScreen() {
                     style={[styles.locationItem, showBorder && styles.locationItemBorder]}
                   >
                     <Entypo name="location-pin" size={24} color="grey" />
-                    <Text style={styles.locationText}>{loc?.name}, {loc?.country}</Text>
+                    <Text style={styles.locationText}>
+                      {loc?.name}, {loc?.country}
+                    </Text>
                   </TouchableOpacity>
                 );
               })}
@@ -102,51 +160,53 @@ function HomeScreen() {
         </View>
 
         {/* Weather Forecast Section */}
-        <View style={styles.weatherContainer}>
-          {/* Location Heading */}
-          <Text style={styles.locationHeading}>
-          {location?.name}, <Text style={styles.locationSubHeading}>{location?.country}</Text>
-          </Text>
-
-          {/* Weather Image */}
-          <View style={styles.weatherImageContainer}>
-            <Image
-              source={weatherImages[current?.condition.text]}
-              style={styles.weatherImage}
-            />
+        {current && location && (
+          <View style={styles.weatherContainer}>
+            <Text style={styles.locationHeading}>
+              {location?.name},{' '}
+              <Text style={styles.locationSubHeading}>{location?.country}</Text>
+            </Text>
+            <View style={styles.weatherImageContainer}>
+              <Image
+                source={weatherImages[current?.condition.text]}
+                style={styles.weatherImage}
+              />
+            </View>
+            <View style={styles.temperatureContainer}>
+              <Text style={styles.temperatureText}>{current?.temp_c}°</Text>
+              <Text style={styles.weatherDescription}>{current?.condition.text}</Text>
+            </View>
           </View>
-
-          {/* Temperature */}
-          <View style={styles.temperatureContainer}>
-            <Text style={styles.temperatureText}>{current?.temp_c}°</Text>
-            <Text style={styles.weatherDescription}>{current?.condition.text}</Text>
-          </View>
-        </View>
+        )}
 
         {/* Additional Weather Data */}
-        <View style={styles.weatherDetails}>
-          <View style={styles.weatherDetailItem}>
-            <Image
-              source={require('../assets/icons/wind.png')}
-              style={styles.weatherDetailIcon}
-            />
-            <Text style={styles.weatherDetailText}>{current?.wind_kph} km/h</Text>
+        {current && (
+          <View style={styles.weatherDetails}>
+            <View style={styles.weatherDetailItem}>
+              <Image
+                source={require('../assets/icons/wind.png')}
+                style={styles.weatherDetailIcon}
+              />
+              <Text style={styles.weatherDetailText}>{current?.wind_kph} km/h</Text>
+            </View>
+            <View style={styles.weatherDetailItem}>
+              <Image
+                source={require('../assets/icons/humidite.png')}
+                style={styles.weatherDetailIcon}
+              />
+              <Text style={styles.weatherDetailText}>{current?.humidity} %</Text>
+            </View>
+            <View style={styles.weatherDetailItem}>
+              <Image
+                source={require('../assets/icons/sun.png')}
+                style={styles.weatherDetailIcon}
+              />
+              <Text style={styles.weatherDetailText}>
+                {weather.forecast?.forecastday[0].astro?.sunrise}
+              </Text>
+            </View>
           </View>
-          <View style={styles.weatherDetailItem}>
-            <Image
-              source={require('../assets/icons/drop.png')}
-              style={styles.weatherDetailIcon}
-            />
-            <Text style={styles.weatherDetailText}>{current?.humidity} %</Text>
-          </View>
-          <View style={styles.weatherDetailItem}>
-            <Image
-              source={require('../assets/icons/sun.png')}
-              style={styles.weatherDetailIcon}
-            />
-            <Text style={styles.weatherDetailText}>7:30 AM</Text>
-          </View>
-        </View>
+        )}
 
         {/* Daily Forecast */}
         <View style={styles.dailyForecast}>
@@ -159,19 +219,25 @@ function HomeScreen() {
             contentContainerStyle={styles.dailyForecastScroll}
             showsHorizontalScrollIndicator={false}
           >
-            {weather?.forecast?.forecastday?.map((item,index)=>{
+            {weather?.forecast?.forecastday?.map((item, index) => {
+              let date = new Date(item.date);
+              let option = { weekday: 'long' };
+              let dayName = date.toLocaleDateString('en-US', option);
               return (
-                <View style={styles.dailyForecastItem}>
-                <Image
-                  source={require('../assets/images/heavyrain.png')}
-                  style={styles.dailyForecastIcon}
-                />
-                <Text style={styles.dailyForecastDay}>{item.date}</Text>
-                <Text style={styles.dailyForecastTemp}>23°</Text>
-              </View>
-                 ) 
+                <View style={styles.dailyForecastItem} key={index}>
+                  <Image
+                    source={{
+                      uri: item.day?.condition?.icon
+                        ? `https:${item.day.condition.icon}`
+                        : null,
+                    }}
+                    style={styles.dailyForecastIcon}
+                  />
+                  <Text style={styles.dailyForecastDay}>{dayName}</Text>
+                  <Text style={styles.dailyForecastTemp}>{item.day.avgtemp_c}°</Text>
+                </View>
+              );
             })}
-
           </ScrollView>
         </View>
       </SafeAreaView>

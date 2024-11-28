@@ -6,7 +6,7 @@ const locationsEndpoint=params=>`http://api.weatherapi.com/v1/search.json?key=${
 
     const apiCall=async(endpoint)=>{
         const option={
-            methode:'GET',
+            method:'GET',
             url:endpoint
         }
         try{
