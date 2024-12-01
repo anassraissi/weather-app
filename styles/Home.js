@@ -148,7 +148,7 @@ export const styles = StyleSheet.create({
     height: 50,
   },
   dailyForecastDay: {
-    fontSize: 14, // Smaller font size for consistency
+    fontSize: 12, // Smaller font size for consistency
     color: 'white',
     marginTop: 5,
   },
