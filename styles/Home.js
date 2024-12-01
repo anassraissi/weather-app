@@ -9,6 +9,8 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     height: '100%',
     width: '100%',
+    resizeMode: 'cover',
+
   },
   safeArea: {
     flex: 1,
@@ -132,16 +134,26 @@ export const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     marginRight: 10,
+    width: 100, // Ensures a consistent width
+    height: 120, // Ensures a consistent height
+    justifyContent: 'space-between', // Space out content evenly
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   dailyForecastIcon: {
-    width: 40,
-    height: 40,
+    width: 50, // Adjusted size
+    height: 50,
   },
   dailyForecastDay: {
+    fontSize: 14, // Smaller font size for consistency
     color: 'white',
     marginTop: 5,
   },
   dailyForecastTemp: {
+    fontSize: 14, // Consistent with day text
     color: 'white',
     marginTop: 5,
   },

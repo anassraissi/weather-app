@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import {
   Image,
@@ -9,6 +10,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ImageBackground
 } from 'react-native';
 import * as Location from 'expo-location'; // For Expo users
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -21,10 +23,13 @@ import { weatherImages } from '../constants';
 import { getData, storeData } from '../utils/AsyncStorage';
 
 function HomeScreen() {
+  const navigation = useNavigation(); // Access the navigation object
   const [showSearch, toggleSearch] = useState(false);
   const [locations, setLocations] = useState([]);
   const [weather, setWeather] = useState({});
   const [loading, setLoading] = useState(true);
+  
+    
 
   // useEffect(() => {
   //   setLocations([]);
@@ -61,9 +66,8 @@ function HomeScreen() {
         latitude,
         longitude,
       });
-      console.log(reverseGeocode);
-
-      console.log(reverseGeocode[0]?.city);
+      // console.log(reverseGeocode);
+      // console.log(reverseGeocode[0]?.city);
       let cityName = reverseGeocode[0]?.city || 'Rabat'; // Default to Rabat if no city found
 
       // Fetch weather data for the detected city
@@ -102,15 +106,10 @@ function HomeScreen() {
   const handelTextDebounce = useCallback(debounce(handelSearch, 1200), []);
   const { current, location } = weather || {};
 
-  return (
-    <View style={styles.container}>
-      <StatusBar style="light" />
-      <Image
-        blurRadius={70}
-        source={require('../assets/images/bg.png')}
-        style={styles.backgroundImage}
-      />
 
+  return (
+    <ImageBackground source={require('../assets/images/bg.png')} style={styles.backgroundImage}>
+      <StatusBar style="light" />
       {/* Search Section */}
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.searchContainer}>
@@ -169,6 +168,11 @@ function HomeScreen() {
             <View style={styles.weatherImageContainer}>
               <Image
                 source={weatherImages[current?.condition.text]}
+                // source={{
+                //   uri: current?.condition
+                //     ? `https:${current.condition.icon}`
+                //     : null,
+                // }}
                 style={styles.weatherImage}
               />
             </View>
@@ -224,24 +228,29 @@ function HomeScreen() {
               let option = { weekday: 'long' };
               let dayName = date.toLocaleDateString('en-US', option);
               return (
-                <View style={styles.dailyForecastItem} key={index}>
-                  <Image
-                    source={{
-                      uri: item.day?.condition?.icon
-                        ? `https:${item.day.condition.icon}`
-                        : null,
-                    }}
-                    style={styles.dailyForecastIcon}
-                  />
-                  <Text style={styles.dailyForecastDay}>{dayName}</Text>
-                  <Text style={styles.dailyForecastTemp}>{item.day.avgtemp_c}°</Text>
-                </View>
+                <TouchableOpacity
+                style={[styles.dailyForecastItem, styles.fixedSizeItem]} // Apply consistent width and height
+                key={index}
+                onPress={() => navigation.navigate('ScreenDetails', { item, dayName })}
+              >
+                <Image
+                  source={{
+                    uri: item.day?.condition?.icon
+                      ? `https:${item.day.condition.icon}`
+                      : null,
+                  }}
+                  style={styles.dailyForecastIcon}
+                />
+                <Text style={styles.dailyForecastDay}>{dayName}</Text>
+                <Text style={styles.dailyForecastTemp}>{item.day.avgtemp_c}°</Text>
+              </TouchableOpacity>
               );
             })}
           </ScrollView>
         </View>
       </SafeAreaView>
-    </View>
+      </ImageBackground>
+
   );
 }
 
