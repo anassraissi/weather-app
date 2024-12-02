@@ -20,7 +20,7 @@ import { styles } from '../styles/Home';
 import { debounce } from 'lodash';
 import { fetchLocation, fetchWeatherForecast } from '../api/weather';
 import { weatherImages } from '../constants';
-import { getData, storeData } from '../utils/AsyncStorage';
+import { getData, removeData, storeData } from '../utils/AsyncStorage';
 
 function HomeScreen() {
   const navigation = useNavigation(); // Access the navigation object
@@ -49,6 +49,9 @@ function HomeScreen() {
   // }, []);
 
   useEffect(() => {
+    myLocalisation()
+  }, []);
+  const myLocalisation=()=>{
     (async () => {
       // Request location permissions
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -83,8 +86,12 @@ function HomeScreen() {
         });
       });
     })();
-  }, []);
+  }
 
+  const currentLocalisation=()=>{
+    removeData('city');
+    myLocalisation();
+  }
   const handleLocation = (location) => {
     setLocations([]);
     setLoading(true);
@@ -151,12 +158,20 @@ function HomeScreen() {
                     <Text style={styles.locationText}>
                       {loc?.name}, {loc?.country}
                     </Text>
+
                   </TouchableOpacity>
                 );
               })}
             </View>
           )}
         </View>
+
+        <View style={styles.myLoca}>
+        <TouchableOpacity style={styles.button} onPress={currentLocalisation}>
+          <Entypo name="location-pin" size={24} color="#fff" />
+          <Text style={styles.buttonText}>My Localisation</Text>
+        </TouchableOpacity>
+      </View>
 
         {/* Weather Forecast Section */}
         {current && location && (
