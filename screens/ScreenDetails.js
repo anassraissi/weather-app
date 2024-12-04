@@ -41,20 +41,20 @@ export default function ScreenDetails({ route }) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
+    marginTop: 20,
     flex: 1,
   },
   backButton: {
     position: 'absolute',
-    top: 50,
-    left: 10,
+    top: 10,
+    left: 1,
     zIndex: 1,
     padding: 10,
   },
   backArrow: {
-    fontSize: 24,
+    fontSize: 40,
     color: '#fff',
   },
   backgroundImage: {
@@ -64,8 +64,8 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   content: {
-    flex:1,
-    padding: 36,
+    flex: 1,
+    padding: 20,
   },
   title: {
     fontSize: 24,
@@ -80,27 +80,35 @@ const styles = StyleSheet.create({
   hourlyItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     padding: 10,
     borderRadius: 8,
     marginBottom: 8,
   },
   hourText: {
+    flex: 1,
     fontSize: 16,
     color: '#fff',
+    textAlign: 'center',
   },
   hourIcon: {
+    flex: 1,
     width: 30,
     height: 30,
+    resizeMode: 'contain',
   },
   tempText: {
+    flex: 1,
     fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
+    textAlign: 'center',
   },
   conditionText: {
+    flex: 2,
     fontSize: 14,
     color: '#fff',
+    textAlign: 'center',
   },
 });
+

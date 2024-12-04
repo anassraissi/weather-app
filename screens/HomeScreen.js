@@ -86,6 +86,8 @@ function HomeScreen() {
         storeData('city', location.name);
       }
       setLoading(false);
+      toggleSearch(false);
+      
     });
   };
 
@@ -144,7 +146,7 @@ function HomeScreen() {
                     key={index}
                     style={[styles.locationItem, showBorder && styles.locationItemBorder]}
                   >
-                    <Entypo name="location-pin" size={24} color="grey" />
+                    <Entypo name="location-pin" size={24} color="white" />
                     <Text style={styles.locationText}>
                       {loc?.name}, {loc?.country}
                     </Text>

@@ -1,85 +1,83 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { theme } from '../theme';
 
-export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    position: 'relative',
-  },
-  backgroundImage: {
-    position: 'absolute',
-    height: '100%',
-    width: '100%',
-    resizeMode: 'cover',
+const { width, height } = Dimensions.get('window');
 
+export const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
   },
   safeArea: {
     flex: 1,
   },
   searchContainer: {
-    marginTop: 40,
-    zIndex: 50,
+    marginHorizontal: 16,
+    marginTop: 50,
+    zIndex: 10,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 50,
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
   },
   textInput: {
-    paddingLeft: 16,
-    height: 44,
     flex: 1,
-    fontSize: 16,
     color: 'white',
-    borderTopLeftRadius: 50,
-    borderBottomLeftRadius: 50,
+    fontSize: 16,
   },
   searchButton: {
+    padding: 10,
     borderRadius: 50,
-    padding: 12,
-    margin: 4,
   },
   locationSuggestions: {
-    position: 'absolute',
-    width: '100%',
-    backgroundColor: '#D1D5DB',
-    top: 64,
-    borderRadius: 24,
-    zIndex: 50,
+    marginTop: 10,
+    backgroundColor: theme.bgWhite(0.3),
+    borderRadius: 10,
+    paddingVertical: 10,
+    backgroundColor:'#1d222a'
   },
   locationItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    padding: 10,
   },
   locationItemBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: '#9CA3AF',
+    borderBottomColor: theme.bgWhite(0.2),
   },
   locationText: {
-    fontSize: 16,
-    marginLeft: 8,
-    color: '#000',
+    color: 'white',
+    marginLeft: 10,
   },
   weatherContainer: {
     alignItems: 'center',
-    marginTop: '20%',
+    marginTop: 30,
   },
   locationHeading: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 28,
+    fontWeight: '600',
     color: 'white',
+    textAlign: 'center',
   },
   locationSubHeading: {
     fontSize: 18,
-    color: '#D1D5DB',
+    fontWeight: '400',
+    color: theme.bgWhite(0.6),
+  },
+  likeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 16,
   },
   weatherImageContainer: {
     marginVertical: 20,
   },
   weatherImage: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
   },
   temperatureContainer: {
     alignItems: 'center',
@@ -90,31 +88,30 @@ export const styles = StyleSheet.create({
     color: 'white',
   },
   weatherDescription: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: 'white',
+    fontSize: 24,
+    fontWeight: '400',
+    color: theme.bgWhite(0.7),
   },
   weatherDetails: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
     marginVertical: 20,
-    paddingHorizontal: 10,
   },
   weatherDetailItem: {
-    flexDirection: 'row',
     alignItems: 'center',
   },
   weatherDetailIcon: {
-    width: 30,
-    height: 30,
-    marginRight: 8,
+    width: 40,
+    height: 40,
+    marginBottom: 10,
   },
   weatherDetailText: {
-    fontSize: 16,
     color: 'white',
+    fontSize: 14,
   },
   dailyForecast: {
     marginTop: 20,
+    paddingHorizontal: 16,
   },
   dailyForecastHeader: {
     flexDirection: 'row',
@@ -122,99 +119,67 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   dailyForecastTitle: {
+    marginLeft: 10,
     fontSize: 18,
+    fontWeight: '600',
     color: 'white',
-    marginLeft: 8,
   },
   dailyForecastScroll: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 16,
   },
   dailyForecastItem: {
-    backgroundColor: '#1E293B',
-    borderRadius: 10,
-    padding: 10,
     alignItems: 'center',
-    marginRight: 10,
-    width: 100, // Ensures a consistent width
-    height: 120, // Ensures a consistent height
-    justifyContent: 'space-between', // Space out content evenly
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    marginBottom:10
+    justifyContent: 'center',
+    width: 100,
+    paddingVertical: 10,
+    marginRight: 16,
+    backgroundColor: theme.bgWhite(0.2),
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: theme.bgWhite(0.4),
+  },
+  fixedSizeItem: {
+    width: 100,
+    height: 120,
   },
   dailyForecastIcon: {
-    width: 50, // Adjusted size
+    width: 50,
     height: 50,
+    marginBottom: 5,
   },
   dailyForecastDay: {
-    fontSize: 12, // Smaller font size for consistency
-    color: 'white',
-    marginTop: 5,
+    fontSize: 14,
+    color: theme.bgWhite(0.9),
+    textAlign: 'center',
   },
   dailyForecastTemp: {
-    fontSize: 14, // Consistent with day text
+    fontSize: 16,
     color: 'white',
-    marginTop: 5,
+    fontWeight: '500',
+    textAlign: 'center',
   },
-
   myLoca: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '', // Dark background for contrast
-    marginTop:20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    marginTop: 10,
   },
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1D72F3', // Bright blue color
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 25,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5, // Adds shadow for Android
-    marginTop:2,
+    backgroundColor: theme.bgWhite(0.3),
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: 'bold',
-    marginLeft: 8, // Space between icon and text
-    height:20
+    color: 'white',
+    fontSize: 14,
+    marginLeft: 5,
   },
   favoritesButton: {
-    position: 'absolute',
-    top: 0,
-    right: 16,
     backgroundColor: theme.bgWhite(0.3),
-    padding: 12,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: 'rgba(0, 0, 0, 0.1)',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    padding: 8,
+    borderRadius: 50,
   },
-  likeButton:{
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    backgroundColor: theme.bgWhite(0.3),
-    padding: 12,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: 'rgba(0, 0, 0, 0.1)',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  }
-  
 });
