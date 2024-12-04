@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
   ImageBackground
-} from 'react-native';
+} from 'react-native';  
 import * as Location from 'expo-location'; // For Expo users
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
@@ -21,6 +21,7 @@ import { debounce } from 'lodash';
 import { fetchLocation, fetchWeatherForecast } from '../api/weather';
 import { weatherImages } from '../constants';
 import { getData, removeData, storeData } from '../utils/AsyncStorage';
+import { useFavorites } from '../context/FavoritesContext';
 
 function HomeScreen() {
   const navigation = useNavigation(); // Access the navigation object
@@ -28,26 +29,8 @@ function HomeScreen() {
   const [locations, setLocations] = useState([]);
   const [weather, setWeather] = useState({});
   const [loading, setLoading] = useState(true);
+  const { favorites, toggleFavorite } = useFavorites(); // Access favorite state
   
-    
-
-  // useEffect(() => {
-  //   setLocations([]);
-  //   setWeather({});
-  //   let cityName = 'Rabat';
-  //   getData('city').then((myCity) => {
-  //     if (myCity) {
-  //       cityName = myCity;
-  //     }
-  //     fetchWeatherForecast({ cityName, days: '7' }).then((data) => {
-  //       if (data && data.current && data.location) {
-  //         setWeather(data);
-  //       }
-  //       setLoading(false);
-  //     });
-  //   });
-  // }, []);
-
   useEffect(() => {
     myLocalisation()
   }, []);
@@ -72,6 +55,8 @@ function HomeScreen() {
       // console.log(reverseGeocode);
       // console.log(reverseGeocode[0]?.city);
       let cityName = reverseGeocode[0]?.city || 'Rabat'; // Default to Rabat if no city found
+
+
 
       // Fetch weather data for the detected city
       getData('city').then((myCity) => {
@@ -112,6 +97,11 @@ function HomeScreen() {
 
   const handelTextDebounce = useCallback(debounce(handelSearch, 1200), []);
   const { current, location } = weather || {};
+
+  const currentPlace = {
+    name: location?.name,
+    country: location?.country,
+  };
 
 
   return (
@@ -165,21 +155,51 @@ function HomeScreen() {
             </View>
           )}
         </View>
-
-        <View style={styles.myLoca}>
-        <TouchableOpacity style={styles.button} onPress={currentLocalisation}>
-          <Entypo name="location-pin" size={24} color="#fff" />
-          <Text style={styles.buttonText}>My Localisation</Text>
+          {!showSearch && (
+                      <View style={styles.myLoca}>
+          <TouchableOpacity style={styles.button} onPress={currentLocalisation}>
+            <Entypo name="location-pin" size={15} color="#fff" />
+            <Text style={styles.buttonText}>My Localisation</Text>
+          </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.favoritesButton}
+          onPress={() => navigation.navigate('FavoritesScreen')}
+        >
+          <Entypo name="heart" size={24} color="red" />
         </TouchableOpacity>
-      </View>
+                  </View>
+
+
+          )}
+
+
 
         {/* Weather Forecast Section */}
         {current && location && (
           <View style={styles.weatherContainer}>
             <Text style={styles.locationHeading}>
               {location?.name},{' '}
-              <Text style={styles.locationSubHeading}>{location?.country}</Text>
+              <Text style={styles.locationSubHeading}>{location?.country}</Text>  
             </Text>
+            {!showSearch && (
+              <TouchableOpacity style={styles.likeButton} onPress={() => toggleFavorite(currentPlace)}>
+  <Entypo
+    name={
+      favorites.some((fav) => fav.name === currentPlace.name)
+        ? 'heart'
+        : 'heart-outlined'
+    }
+    size={32}
+    color={
+      favorites.some((fav) => fav.name === currentPlace.name)
+        ? 'red'
+        : 'white'
+    }
+  />
+</TouchableOpacity>
+
+            )}
+
             <View style={styles.weatherImageContainer}>
               <Image
                 source={weatherImages[current?.condition.text]}
@@ -190,11 +210,13 @@ function HomeScreen() {
                 // }}
                 style={styles.weatherImage}
               />
+
             </View>
             <View style={styles.temperatureContainer}>
               <Text style={styles.temperatureText}>{current?.temp_c}°</Text>
               <Text style={styles.weatherDescription}>{current?.condition.text}</Text>
             </View>
+
           </View>
         )}
 

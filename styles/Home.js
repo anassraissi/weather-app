@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { theme } from '../theme';
 
 export const styles = StyleSheet.create({
   container: {
@@ -142,6 +143,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    marginBottom:10
   },
   dailyForecastIcon: {
     width: 50, // Adjusted size
@@ -162,7 +164,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#002B5B', // Dark background for contrast
+    backgroundColor: '', // Dark background for contrast
+    marginTop:20,
   },
   button: {
     flexDirection: 'row',
@@ -176,11 +179,42 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5, // Adds shadow for Android
+    marginTop:2,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     marginLeft: 8, // Space between icon and text
+    height:20
   },
+  favoritesButton: {
+    position: 'absolute',
+    top: 0,
+    right: 16,
+    backgroundColor: theme.bgWhite(0.3),
+    padding: 12,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: 'rgba(0, 0, 0, 0.1)',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  likeButton:{
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: theme.bgWhite(0.3),
+    padding: 12,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: 'rgba(0, 0, 0, 0.1)',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  }
+  
 });
