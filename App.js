@@ -9,39 +9,26 @@ import HomeScreen from './screens/HomeScreen';
 import ScreenDetails from './screens/ScreenDetails';
 import FavoritesScreen from './screens/FavoritesScreen';
 import ConfigScreen from './screens/ConfigScreen';
+import { AppProvider } from './context/AppContext';
 
 // Context
-import { FavoritesProvider } from './context/FavoritesContext';
 
-// Navigators
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function HomeStackNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ScreenDetails"
-        component={ScreenDetails}
-        options={{ title: 'Details', headerShown: false }}
-      />
-      <Stack.Screen
-        name="FavoritesScreen"
-        component={FavoritesScreen}
-        options={{ title: 'Favorites', headerShown: false }}
-      />
+      <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ScreenDetails" component={ScreenDetails} options={{ headerShown: false }} />
+      <Stack.Screen name="FavoritesScreen" component={FavoritesScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }
 
 export default function App() {
   return (
-    <FavoritesProvider>
+    <AppProvider>
       <NavigationContainer>
         <Tab.Navigator
           screenOptions={({ route }) => ({
@@ -54,22 +41,12 @@ export default function App() {
               }
               return <Ionicons name={iconName} size={size} color={color} />;
             },
-            tabBarActiveTintColor: 'blue',
-            tabBarInactiveTintColor: 'gray',
           })}
         >
-          <Tab.Screen
-            name="Home"
-            component={HomeStackNavigator}
-            options={{ headerShown: false }}
-          />
-          <Tab.Screen
-            name="Config"
-            component={ConfigScreen}
-            options={{ title: 'Config', headerShown: false }}
-          />
+          <Tab.Screen name="Home" component={HomeStackNavigator} options={{ headerShown: false }} />
+          <Tab.Screen name="Config" component={ConfigScreen}  options={{ headerShown: false }}/>
         </Tab.Navigator>
       </NavigationContainer>
-    </FavoritesProvider>
+    </AppProvider>
   );
 }

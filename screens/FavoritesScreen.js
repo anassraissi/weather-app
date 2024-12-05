@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
-import { useFavorites } from '../context/FavoritesContext';
 import { fetchWeatherForecast } from '../api/weather';
 import { weatherImages } from '../constants';
 import { useNavigation } from '@react-navigation/native';
+import { useAppContext } from '../context/AppContext';
 
 function FavoritesScreen() {
-  const { favorites, toggleFavorite } = useFavorites();
+  const { favorites, toggleFavorite } = useAppContext();
   const [weatherData, setWeatherData] = useState({});
 
   const navigation = useNavigation(); // Use navigation to handle the back action

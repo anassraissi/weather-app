@@ -11,17 +11,17 @@ import {
   TouchableOpacity,
   View,
   ImageBackground
-} from 'react-native';  
+} from 'react-native';
 import * as Location from 'expo-location'; // For Expo users
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
-import { theme } from '../theme';
+import { theme } from '../theme'; // Assuming theme contains colors
 import { styles } from '../styles/Home';
 import { debounce } from 'lodash';
 import { fetchLocation, fetchWeatherForecast } from '../api/weather';
 import { weatherImages } from '../constants';
 import { getData, removeData, storeData } from '../utils/AsyncStorage';
-import { useFavorites } from '../context/FavoritesContext';
+import { useAppContext } from '../context/AppContext'; // Use your context
 
 function HomeScreen() {
   const navigation = useNavigation(); // Access the navigation object
@@ -29,38 +29,31 @@ function HomeScreen() {
   const [locations, setLocations] = useState([]);
   const [weather, setWeather] = useState({});
   const [loading, setLoading] = useState(true);
-  const { favorites, toggleFavorite } = useFavorites(); // Access favorite state
+  const { favorites, toggleFavorite, Screentheme, temperatureUnit, changeTemperatureUnit } = useAppContext(); // Access context values
   
   useEffect(() => {
-    myLocalisation()
+    myLocalisation();
   }, []);
-  const myLocalisation=()=>{
+  
+  const myLocalisation = () => {
     (async () => {
-      // Request location permissions
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         console.log('Permission to access location was denied');
         return;
       }
 
-      // Get the user's current location
       let location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
 
-      // Reverse geocoding to get the city name
       let reverseGeocode = await Location.reverseGeocodeAsync({
         latitude,
         longitude,
       });
-      // console.log(reverseGeocode);
-      // console.log(reverseGeocode[0]?.city);
-      let cityName = reverseGeocode[0]?.city || 'Rabat'; // Default to Rabat if no city found
+      let cityName = reverseGeocode[0]?.city || 'Rabat';
 
-
-
-      // Fetch weather data for the detected city
       getData('city').then((myCity) => {
-        if (myCity=='Rabat') {
+        if (myCity === 'Rabat') {
           cityName = myCity;
         }
         fetchWeatherForecast({ cityName, days: '7' }).then((data) => {
@@ -71,12 +64,13 @@ function HomeScreen() {
         });
       });
     })();
-  }
+  };
 
-  const currentLocalisation=()=>{
+  const currentLocalisation = () => {
     removeData('city');
     myLocalisation();
-  }
+  };
+
   const handleLocation = (location) => {
     setLocations([]);
     setLoading(true);
@@ -87,7 +81,6 @@ function HomeScreen() {
       }
       setLoading(false);
       toggleSearch(false);
-      
     });
   };
 
@@ -105,85 +98,84 @@ function HomeScreen() {
     country: location?.country,
   };
 
+  const convertTemperature = (tempCelsius) => {
+    if (temperatureUnit === 'F') {
+      return (tempCelsius * 9) / 5 + 32; // Celsius to Fahrenheit
+    }
+    return tempCelsius; // Celsius
+  };
 
   return (
-    <ImageBackground source={require('../assets/images/bg.png')} style={styles.backgroundImage}>
-      <StatusBar style="light" />
-      {/* Search Section */}
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.searchContainer}>
-          <View
-            style={[
-              styles.searchBar,
-              { backgroundColor: showSearch ? theme.bgWhite(0.2) : 'transparent' },
-            ]}
-          >
-            {showSearch && (
-              <TextInput
-                onChangeText={handelTextDebounce}
-                placeholder="Search city"
-                placeholderTextColor="lightgray"
-                style={styles.textInput}
-              />
-            )}
-            <TouchableOpacity
-              onPress={() => toggleSearch(!showSearch)}
-              style={[styles.searchButton, { backgroundColor: theme.bgWhite(0.3) }]}
-            >
-              <AntDesign name="search1" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-
-          {/* Location Suggestions */}
-          {showSearch && locations.length > 0 && (
-            <View style={styles.locationSuggestions}>
-              {locations.map((loc, index) => {
-                const showBorder = index + 1 !== locations.length;
-
-                return (
-                  <TouchableOpacity
-                    onPress={() => handleLocation(loc)}
-                    key={index}
-                    style={[styles.locationItem, showBorder && styles.locationItemBorder]}
-                  >
-                    <Entypo name="location-pin" size={24} color="white" />
-                    <Text style={styles.locationText}>
-                      {loc?.name}, {loc?.country}
-                    </Text>
-
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: Screentheme === 'dark' ? '#000' : '#fff' }]}>
+      <View style={styles.searchContainer}>
+        <View
+          style={[styles.searchBar, { backgroundColor: showSearch ? theme.bgWhite(0.2) : 'transparent' }]}
+        >
+          {showSearch && (
+            <TextInput
+              onChangeText={handelTextDebounce}
+              placeholder="Search city"
+              placeholderTextColor="lightgray"
+              style={styles.textInput}
+            />
           )}
+          <TouchableOpacity
+            onPress={() => toggleSearch(!showSearch)}
+            style={[styles.searchButton, { backgroundColor: theme.bgWhite(0.3) }]}
+          >
+            <AntDesign name="search1" size={24} color="white" />
+          </TouchableOpacity>
         </View>
-          {!showSearch && (
-                      <View style={styles.myLoca}>
+
+        {/* Location Suggestions */}
+        {showSearch && locations.length > 0 && (
+          <View style={styles.locationSuggestions}>
+            {locations.map((loc, index) => {
+              const showBorder = index + 1 !== locations.length;
+
+              return (
+                <TouchableOpacity
+                  onPress={() => handleLocation(loc)}
+                  key={index}
+                  style={[styles.locationItem, showBorder && styles.locationItemBorder]}
+                >
+                  <Entypo name="location-pin" size={24} color="white" />
+                  <Text style={styles.locationText}>
+                    {loc?.name}, {loc?.country}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        )}
+      </View>
+
+      {/* My Location Button */}
+      {!showSearch && (
+        <View style={styles.myLoca}>
           <TouchableOpacity style={styles.button} onPress={currentLocalisation}>
             <Entypo name="location-pin" size={15} color="#fff" />
-            <Text style={styles.buttonText}>My Localisation</Text>
+            <Text style={styles.buttonText}>My Location</Text>
           </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.favoritesButton}
-          onPress={() => navigation.navigate('FavoritesScreen')}
-        >
-          <Entypo name="heart" size={24} color="red" />
-        </TouchableOpacity>
-                  </View>
+          <TouchableOpacity
+            style={styles.favoritesButton}
+            onPress={() => navigation.navigate('FavoritesScreen')}
+          >
+            <Entypo name="heart" size={24} color="red" />
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Weather Section */}
+      {current && location && (
+        <View style={styles.weatherContainer}>
+          <Text style={styles.locationHeading}>
+            {location?.name},{' '}
+            <Text style={styles.locationSubHeading}>{location?.country}</Text>
+          </Text>
 
 
-          )}
-
-
-
-        {/* Weather Forecast Section */}
-        {current && location && (
-          <View style={styles.weatherContainer}>
-            <Text style={styles.locationHeading}>
-              {location?.name},{' '}
-              <Text style={styles.locationSubHeading}>{location?.country}</Text>  
-            </Text>
-            {!showSearch && (
+          {!showSearch && (
               <TouchableOpacity style={styles.likeButton} onPress={() => toggleFavorite(currentPlace)}>
   <Entypo
     name={
@@ -201,74 +193,70 @@ function HomeScreen() {
 </TouchableOpacity>
 
             )}
+            
 
-            <View style={styles.weatherImageContainer}>
-              <Image
-                source={weatherImages[current?.condition.text]}
-                // source={{
-                //   uri: current?.condition
-                //     ? `https:${current.condition.icon}`
-                //     : null,
-                // }}
-                style={styles.weatherImage}
-              />
-
-            </View>
-            <View style={styles.temperatureContainer}>
-              <Text style={styles.temperatureText}>{current?.temp_c}°</Text>
-              <Text style={styles.weatherDescription}>{current?.condition.text}</Text>
-            </View>
-
+          <View style={styles.weatherImageContainer}>
+            <Image
+              source={weatherImages[current?.condition.text]}
+              style={styles.weatherImage}
+            />
           </View>
-        )}
-
-        {/* Additional Weather Data */}
-        {current && (
-          <View style={styles.weatherDetails}>
-            <View style={styles.weatherDetailItem}>
-              <Image
-                source={require('../assets/icons/wind.png')}
-                style={styles.weatherDetailIcon}
-              />
-              <Text style={styles.weatherDetailText}>{current?.wind_kph} km/h</Text>
-            </View>
-            <View style={styles.weatherDetailItem}>
-              <Image
-                source={require('../assets/icons/humidite.png')}
-                style={styles.weatherDetailIcon}
-              />
-              <Text style={styles.weatherDetailText}>{current?.humidity} %</Text>
-            </View>
-            <View style={styles.weatherDetailItem}>
-              <Image
-                source={require('../assets/icons/sun.png')}
-                style={styles.weatherDetailIcon}
-              />
-              <Text style={styles.weatherDetailText}>
-                {weather.forecast?.forecastday[0].astro?.sunrise}
-              </Text>
-            </View>
+          <View style={styles.temperatureContainer}>
+            <Text style={styles.temperatureText}>
+              {convertTemperature(current?.temp_c).toFixed(1)}°{temperatureUnit}
+            </Text>
+            <Text style={styles.weatherDescription}>{current?.condition.text}</Text>
           </View>
-        )}
+        </View>
+      )}
 
-        {/* Daily Forecast */}
-        <View style={styles.dailyForecast}>
-          <View style={styles.dailyForecastHeader}>
-            <AntDesign name="calendar" size={24} color="white" />
-            <Text style={styles.dailyForecastTitle}>Daily Forecast</Text>
+      {/* Additional Weather Data */}
+      {current && (
+        <View style={styles.weatherDetails}>
+          <View style={styles.weatherDetailItem}>
+            <Image
+              source={require('../assets/icons/wind.png')}
+              style={styles.weatherDetailIcon}
+            />
+            <Text style={styles.weatherDetailText}>{current?.wind_kph} km/h</Text>
           </View>
-          <ScrollView
-            horizontal
-            contentContainerStyle={styles.dailyForecastScroll}
-            showsHorizontalScrollIndicator={false}
-          >
-            {weather?.forecast?.forecastday?.map((item, index) => {
-              let date = new Date(item.date);
-              let option = { weekday: 'long' };
-              let dayName = date.toLocaleDateString('en-US', option);
-              return (
-                <TouchableOpacity
-                style={[styles.dailyForecastItem, styles.fixedSizeItem]} // Apply consistent width and height
+          <View style={styles.weatherDetailItem}>
+            <Image
+              source={require('../assets/icons/humidite.png')}
+              style={styles.weatherDetailIcon}
+            />
+            <Text style={styles.weatherDetailText}>{current?.humidity} %</Text>
+          </View>
+          <View style={styles.weatherDetailItem}>
+            <Image
+              source={require('../assets/icons/sun.png')}
+              style={styles.weatherDetailIcon}
+            />
+            <Text style={styles.weatherDetailText}>
+              {weather.forecast?.forecastday[0].astro?.sunrise}
+            </Text>
+          </View>
+        </View>
+      )}
+
+      {/* Daily Forecast */}
+      <View style={styles.dailyForecast}>
+        <View style={styles.dailyForecastHeader}>
+          <AntDesign name="calendar" size={24} color="white" />
+          <Text style={styles.dailyForecastTitle}>Daily Forecast</Text>
+        </View>
+        <ScrollView
+          horizontal
+          contentContainerStyle={styles.dailyForecastScroll}
+          showsHorizontalScrollIndicator={false}
+        >
+          {weather?.forecast?.forecastday?.map((item, index) => {
+            let date = new Date(item.date);
+            let option = { weekday: 'long' };
+            let dayName = date.toLocaleDateString('en-US', option);
+            return (
+              <TouchableOpacity
+                style={[styles.dailyForecastItem, styles.fixedSizeItem]}
                 key={index}
                 onPress={() => navigation.navigate('ScreenDetails', { item, dayName })}
               >
@@ -281,15 +269,15 @@ function HomeScreen() {
                   style={styles.dailyForecastIcon}
                 />
                 <Text style={styles.dailyForecastDay}>{dayName}</Text>
-                <Text style={styles.dailyForecastTemp}>{item.day.avgtemp_c}°</Text>
+                <Text style={styles.dailyForecastTemp}>
+                  {convertTemperature(item.day.avgtemp_c).toFixed(1)}°{temperatureUnit}
+                </Text>
               </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-        </View>
-      </SafeAreaView>
-      </ImageBackground>
-
+            );
+          })}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 
