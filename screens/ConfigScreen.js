@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#5fafdd',
   },
   darkMode: {
     backgroundColor: '#333',

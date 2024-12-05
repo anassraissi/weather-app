@@ -106,7 +106,7 @@ function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: Screentheme === 'dark' ? '#000' : '#fff' }]}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: Screentheme === 'dark' ? '#000' : '#5fafdd' }]}>
       <View style={styles.searchContainer}>
         <View
           style={[styles.searchBar, { backgroundColor: showSearch ? theme.bgWhite(0.2) : 'transparent' }]}
@@ -193,7 +193,7 @@ function HomeScreen() {
 </TouchableOpacity>
 
             )}
-            
+
 
           <View style={styles.weatherImageContainer}>
             <Image
@@ -234,6 +234,15 @@ function HomeScreen() {
             />
             <Text style={styles.weatherDetailText}>
               {weather.forecast?.forecastday[0].astro?.sunrise}
+            </Text>
+          </View>
+          <View style={styles.weatherDetailItem}>
+            <Image
+              source={require('../assets/icons/sunset.png')}
+              style={styles.weatherDetailIcon}
+            />
+            <Text style={styles.weatherDetailText}>
+              {weather.forecast?.forecastday[0].astro?.sunset}
             </Text>
           </View>
         </View>

@@ -10,11 +10,11 @@ export const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    backgroundColor:'silver'
+    backgroundColor:'silver',
   },
   searchContainer: {
     marginHorizontal: 16,
-    marginTop: 50,
+    marginTop: 40,
     zIndex: 10,
   },
   searchBar: {
@@ -55,7 +55,7 @@ export const styles = StyleSheet.create({
   },
   weatherContainer: {
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 16,
   },
   locationHeading: {
     fontSize: 28,
