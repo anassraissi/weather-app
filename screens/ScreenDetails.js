@@ -1,29 +1,33 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useAppContext } from '../context/AppContext';
 
 export default function ScreenDetails({ route }) {
-  const navigation = useNavigation(); // Use navigation to handle the back action
+  const navigation = useNavigation();
   const { item, dayName } = route.params;
+  const { Screentheme, toggleTheme } = useAppContext(); // Use theme and toggle function
+
+  const themeStyles = Screentheme === 'light' ? styles.lightTheme : styles.darkTheme;
 
   return (
-    <View style={styles.container}>
-      {/* Custom Back Arrow */}
+    <View style={[styles.container, themeStyles.container]}>
+      {/* Back Arrow */}
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Text style={styles.backArrow}>←</Text>
+        <Text style={[styles.backArrow, themeStyles.text]}>←</Text>
       </TouchableOpacity>
 
-      <Image
-        source={require('../assets/images/bg.png')}
-        style={styles.backgroundImage}
-        blurRadius={5}
-      />
       <View style={styles.content}>
-        <Text style={styles.title}>Hourly Forecast for {dayName}</Text>
+
+        <Text style={[styles.title, themeStyles.text]}>Hourly Forecast for {dayName}</Text>
+
+        {/* Hourly Forecast */}
         <ScrollView contentContainerStyle={styles.hourlyList}>
           {item?.hour.map((hourData, idx) => (
-            <View key={idx} style={styles.hourlyItem}>
-              <Text style={styles.hourText}>{hourData.time.split(' ')[1]}</Text>
+            <View key={idx} style={[styles.hourlyItem, themeStyles.card]}>
+              <Text style={[styles.hourText, themeStyles.text]}>
+                {hourData.time.split(' ')[1]}
+              </Text>
               <Image
                 source={{
                   uri: hourData?.condition?.icon
@@ -32,8 +36,10 @@ export default function ScreenDetails({ route }) {
                 }}
                 style={styles.hourIcon}
               />
-              <Text style={styles.tempText}>{hourData.temp_c}°C</Text>
-              <Text style={styles.conditionText}>{hourData.condition.text}</Text>
+              <Text style={[styles.tempText, themeStyles.text]}>{hourData.temp_c}°C</Text>
+              <Text style={[styles.conditionText, themeStyles.text]}>
+                {hourData.condition.text}
+              </Text>
             </View>
           ))}
         </ScrollView>
@@ -41,9 +47,9 @@ export default function ScreenDetails({ route }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
     flex: 1,
   },
   backButton: {
@@ -55,7 +61,6 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     fontSize: 40,
-    color: '#fff',
   },
   backgroundImage: {
     flex: 1,
@@ -70,7 +75,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
     textAlign: 'center',
     marginBottom: 16,
   },
@@ -80,7 +84,6 @@ const styles = StyleSheet.create({
   hourlyItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     padding: 10,
     borderRadius: 8,
     marginBottom: 8,
@@ -88,7 +91,6 @@ const styles = StyleSheet.create({
   hourText: {
     flex: 1,
     fontSize: 16,
-    color: '#fff',
     textAlign: 'center',
   },
   hourIcon: {
@@ -101,14 +103,35 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#fff',
     textAlign: 'center',
   },
   conditionText: {
     flex: 2,
     fontSize: 14,
-    color: '#fff',
     textAlign: 'center',
   },
-});
+  themeButton: {
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  themeButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 
+  // Theme Styles
+  lightTheme: {
+    container: { backgroundColor: '#5fafdd' },
+    text: { color: '#000' },
+    button: { backgroundColor: '#ddd' },
+    card: { backgroundColor: '#fff' },
+  },
+  darkTheme: {
+    container: { backgroundColor: '#121212' },
+    text: { color: '#fff' },
+    button: { backgroundColor: '#333' },
+    card: { backgroundColor: '#1e1e1e' },
+  },
+});

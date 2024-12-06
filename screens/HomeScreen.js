@@ -157,12 +157,23 @@ function HomeScreen() {
             <Entypo name="location-pin" size={15} color="#fff" />
             <Text style={styles.buttonText}>My Location</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.favoritesButton}
-            onPress={() => navigation.navigate('FavoritesScreen')}
-          >
-            <Entypo name="heart" size={24} color="red" />
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.favoritesButton} onPress={() => toggleFavorite(currentPlace)}>
+<Entypo
+  name={
+    favorites.some((fav) => fav.name === currentPlace.name)
+      ? 'heart'
+      : 'heart-outlined'
+  }
+  size={32}
+  color={
+    favorites.some((fav) => fav.name === currentPlace.name)
+      ? 'red'
+      : 'white'
+  }
+/>
+</TouchableOpacity>
+
+
         </View>
       )}
 
@@ -175,24 +186,7 @@ function HomeScreen() {
           </Text>
 
 
-          {!showSearch && (
-              <TouchableOpacity style={styles.likeButton} onPress={() => toggleFavorite(currentPlace)}>
-  <Entypo
-    name={
-      favorites.some((fav) => fav.name === currentPlace.name)
-        ? 'heart'
-        : 'heart-outlined'
-    }
-    size={32}
-    color={
-      favorites.some((fav) => fav.name === currentPlace.name)
-        ? 'red'
-        : 'white'
-    }
-  />
-</TouchableOpacity>
 
-            )}
 
 
           <View style={styles.weatherImageContainer}>

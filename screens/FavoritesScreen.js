@@ -6,9 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useAppContext } from '../context/AppContext';
 
 function FavoritesScreen() {
-  const { favorites, toggleFavorite } = useAppContext();
+  const { favorites, toggleFavorite, Screentheme } = useAppContext();
   const [weatherData, setWeatherData] = useState({});
-
   const navigation = useNavigation(); // Use navigation to handle the back action
 
   useEffect(() => {
@@ -27,9 +26,8 @@ function FavoritesScreen() {
 
   const renderFavoriteCard = ({ item }) => {
     const weather = weatherData[item.name];
-
     return (
-      <View style={styles.card}>
+      <View style={[styles.card, Screentheme === 'dark' && styles.cardDark]}>
         {/* Left Side: Image and Weather Details */}
         <View style={styles.leftSection}>
           <Image
@@ -37,17 +35,27 @@ function FavoritesScreen() {
             style={styles.weatherImage}
           />
           <View style={styles.weatherDetails}>
-            <Text style={styles.dailyForecastTemp}>{weather?.current?.temp_c} °C</Text>
-            <Text style={styles.dailyForecastCondition}>{weather?.current?.condition?.text}</Text>
+            <Text style={[styles.dailyForecastTemp, Screentheme === 'dark' && styles.textDark]}>
+              {weather?.current?.temp_c} °C
+            </Text>
+            <Text
+              style={[styles.dailyForecastCondition, Screentheme === 'dark' && styles.textDark]}
+            >
+              {weather?.current?.condition?.text}
+            </Text>
           </View>
         </View>
 
         {/* Right Side: Place Details and Button */}
         <View style={styles.cardContent}>
-          <Text style={styles.cardTitle}>{item.name}</Text>
-          <Text style={styles.cardSubtitle}>{item.country}</Text>
+          <Text style={[styles.cardTitle, Screentheme === 'dark' && styles.textDark]}>
+            {item.name}
+          </Text>
+          <Text style={[styles.cardSubtitle, Screentheme === 'dark' && styles.textDark]}>
+            {item.country}
+          </Text>
           <TouchableOpacity
-            style={styles.removeButton}
+            style={[styles.removeButton, Screentheme === 'dark' && styles.removeButtonDark]}
             onPress={() => toggleFavorite(item)}
           >
             <Text style={styles.removeButtonText}>Remove</Text>
@@ -58,11 +66,18 @@ function FavoritesScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        Screentheme === 'dark' ? styles.containerDark : styles.containerLight,
+      ]}
+    >
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Text style={styles.backArrow}>←</Text>
+        <Text style={[styles.backArrow, Screentheme === 'dark' && styles.textDark]}>←</Text>
       </TouchableOpacity>
-      <Text style={styles.headerText}>Favorites Place</Text>
+      <Text style={[styles.headerText, Screentheme === 'dark' && styles.textDark]}>
+        Favorites Place
+      </Text>
 
       {favorites.length > 0 ? (
         <FlatList
@@ -72,20 +87,25 @@ function FavoritesScreen() {
           contentContainerStyle={styles.listContainer}
         />
       ) : (
-        <Text style={styles.noFavoritesText}>No favorites selected!</Text>
+        <Text style={[styles.noFavoritesText, Screentheme === 'dark' && styles.textDark]}>
+          No favorites selected!
+        </Text>
       )}
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
-    backgroundColor: '#f8f8f8',
     paddingHorizontal: 16,
-    paddingLeft:50,
-    paddingRight:50,
     paddingTop: 50,
+  },
+  containerLight: {
+    backgroundColor: '#5fafdd',
+  },
+  containerDark: {
+    backgroundColor: '#333',
   },
   backButton: {
     position: 'absolute',
@@ -101,7 +121,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'red',
+    color: 'black',
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -127,17 +147,19 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     padding: 3,
   },
+  cardDark: {
+    backgroundColor: '#444',
+  },
   leftSection: {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 80, // Ensure a fixed width for alignment
+    width: 80,
   },
   weatherImage: {
     height: 80,
     width: 80,
     marginBottom: 1,
-    marginLeft:30
   },
   weatherDetails: {
     alignItems: 'center',
@@ -146,19 +168,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'black',
     fontWeight: 'bold',
-    marginLeft:15
   },
   dailyForecastCondition: {
     fontSize: 14,
     color: 'gray',
     marginTop: 5,
-    marginLeft:20,
-    
   },
   cardContent: {
     flex: 1,
     justifyContent: 'space-between',
-    marginLeft: 60,
+    marginLeft: 20,
   },
   cardTitle: {
     fontSize: 16,
@@ -178,12 +197,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignSelf: 'flex-start',
   },
+  removeButtonDark: {
+    backgroundColor: '#c0392b',
+  },
   removeButtonText: {
     color: '#fff',
     fontSize: 14,
   },
+  textDark: {
+    color: '#fff',
+  },
 });
-
-
 
 export default FavoritesScreen;

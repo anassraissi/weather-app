@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
   },
   searchContainer: {
     marginHorizontal: 16,
-    marginTop: 40,
+    marginTop: 0,
     zIndex: 10,
   },
   searchBar: {
