@@ -4,6 +4,55 @@ import { theme } from '../theme';
 const { width, height } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
+  
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  modalDetails: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: 'gray',
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: '#2196F3',
+    borderRadius: 5,
+    padding: 10,
+    elevation: 2,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   backgroundImage: {
     flex: 1,
     resizeMode: 'cover',
@@ -14,7 +63,7 @@ export const styles = StyleSheet.create({
   },
   searchContainer: {
     marginHorizontal: 16,
-    marginTop: 0,
+    marginTop: 40,
     zIndex: 10,
   },
   searchBar: {
@@ -77,8 +126,8 @@ export const styles = StyleSheet.create({
     marginVertical: 20,
   },
   weatherImage: {
-    width: 150,
-    height: 150,
+    width: 300,
+    height: 180,
   },
   temperatureContainer: {
     alignItems: 'center',

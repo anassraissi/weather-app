@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
+import FastImage from 'react-native-fast-image';
+import LottieView from 'lottie-react-native';
+
+
 import {
   Image,
   SafeAreaView,
@@ -10,7 +14,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  ImageBackground
+  ImageBackground,
+  Modal,
 } from 'react-native';
 import * as Location from 'expo-location'; // For Expo users
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -18,8 +23,8 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { theme } from '../theme'; // Assuming theme contains colors
 import { styles } from '../styles/Home';
 import { debounce } from 'lodash';
-import { fetchLocation, fetchWeatherForecast } from '../api/weather';
-import { weatherImages } from '../constants';
+import { fetchAlerts, fetchLocation, fetchWeatherForecast } from '../api/weather';
+import { getWeatherAnimation, weatherImages } from '../constants';
 import { getData, removeData, storeData } from '../utils/AsyncStorage';
 import { useAppContext } from '../context/AppContext'; // Use your context
 
@@ -29,6 +34,9 @@ function HomeScreen() {
   const [locations, setLocations] = useState([]);
   const [weather, setWeather] = useState({});
   const [loading, setLoading] = useState(true);
+  const [alerts, setAlets] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false); // Modal visibility state
+
   const { favorites, toggleFavorite, Screentheme, temperatureUnit, changeTemperatureUnit } = useAppContext(); // Access context values
   
   useEffect(() => {
@@ -60,17 +68,15 @@ function HomeScreen() {
           if (data && data.current && data.location) {
             setWeather(data);
           }
-          setLoading(false);
+          setLoading(false);  
         });
       });
     })();
   };
-
   const currentLocalisation = () => {
     removeData('city');
     myLocalisation();
   };
-
   const handleLocation = (location) => {
     setLocations([]);
     setLoading(true);
@@ -79,11 +85,18 @@ function HomeScreen() {
         setWeather(data);
         storeData('city', location.name);
       }
-      setLoading(false);
-      toggleSearch(false);
+      setLoading(false);  
     });
-  };
+    fetchAlerts({ cityName: location.name}).then((data) => {
+      if (data?.alerts?.alert?.length > 0) {
+        setAlets(data.alerts.alert[0]); // Save the alert data
+        console.log(alerts);
+        setModalVisible(true); // Show modal with alert
 
+      }
+    });
+    toggleSearch(false);
+    };  
   const handelSearch = (value) => {
     if (value.length > 2) {
       fetchLocation({ cityName: value }).then((data) => setLocations(data));
@@ -106,8 +119,45 @@ function HomeScreen() {
   };
 
   return (
+    
     <SafeAreaView style={[styles.safeArea, { backgroundColor: Screentheme === 'dark' ? '#000' : '#5fafdd' }]}>
-      <View style={styles.searchContainer}>
+          {/* Modal */}
+          <View style={styles.container}>
+  {/* Weather Alert Modal */}
+  <Modal
+    animationType="slide"
+    transparent={true}
+    visible={modalVisible}
+    onRequestClose={() => {
+      setModalVisible(false); // Close the modal when back is pressed
+    }}
+  >
+    <View style={styles.modalBackground}>
+      <View style={styles.modalContent}>
+        <Text style={styles.modalTitle}>Weather Alert</Text>
+        <Text style={styles.modalText}>
+          {alerts?.headline || "No alerts available."}
+        </Text>
+        <Text style={styles.modalDetails}>
+          {alerts?.certainty || "No additional details."}
+        </Text>
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => setModalVisible(false)}
+        >
+          <Text style={styles.closeButtonText}>Close</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </Modal>
+</View>
+
+    <View style={styles.searchContainer}>
+
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+
+    </View>
+
         <View
           style={[styles.searchBar, { backgroundColor: showSearch ? theme.bgWhite(0.2) : 'transparent' }]}
         >
@@ -185,16 +235,15 @@ function HomeScreen() {
             <Text style={styles.locationSubHeading}>{location?.country}</Text>
           </Text>
 
-
-
-
-
           <View style={styles.weatherImageContainer}>
-            <Image
-              source={weatherImages[current?.condition.text]}
-              style={styles.weatherImage}
-            />
-          </View>
+  
+          <LottieView 
+          style={styles.weatherImage}
+          source={getWeatherAnimation(current?.condition.text)}
+          autoPlay
+          loop
+          />
+            </View>
           <View style={styles.temperatureContainer}>
             <Text style={styles.temperatureText}>
               {convertTemperature(current?.temp_c).toFixed(1)}°{temperatureUnit}
@@ -241,7 +290,6 @@ function HomeScreen() {
           </View>
         </View>
       )}
-
       {/* Daily Forecast */}
       <View style={styles.dailyForecast}>
         <View style={styles.dailyForecastHeader}>
@@ -265,9 +313,9 @@ function HomeScreen() {
               >
                 <Image
                   source={{
-                    uri: item.day?.condition?.icon
+                    uri: item.day.condition.icon
                       ? `https:${item.day.condition.icon}`
-                      : null,
+                      : '',
                   }}
                   style={styles.dailyForecastIcon}
                 />
@@ -277,6 +325,7 @@ function HomeScreen() {
                 </Text>
               </TouchableOpacity>
             );
+
           })}
         </ScrollView>
       </View>

@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import ScreenDetails from './screens/ScreenDetails';

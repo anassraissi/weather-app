@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import { fetchWeatherForecast } from '../api/weather';
-import { weatherImages } from '../constants';
+import { getWeatherAnimation, weatherImages } from '../constants';
 import { useNavigation } from '@react-navigation/native';
 import { useAppContext } from '../context/AppContext';
+import LottieView from 'lottie-react-native';
 
 function FavoritesScreen() {
   const { favorites, toggleFavorite, Screentheme } = useAppContext();
@@ -23,16 +24,17 @@ function FavoritesScreen() {
     }
     fetchWeatherForFavorites();
   }, [favorites]);
-
   const renderFavoriteCard = ({ item }) => {
     const weather = weatherData[item.name];
     return (
       <View style={[styles.card, Screentheme === 'dark' && styles.cardDark]}>
         {/* Left Side: Image and Weather Details */}
         <View style={styles.leftSection}>
-          <Image
-            source={weatherImages[weather?.current?.condition?.text]}
-            style={styles.weatherImage}
+          <LottieView 
+          style={styles.weatherImage}
+          source={getWeatherAnimation(weather?.current?.condition?.text)}
+          autoPlay
+          loop
           />
           <View style={styles.weatherDetails}>
             <Text style={[styles.dailyForecastTemp, Screentheme === 'dark' && styles.textDark]}>
