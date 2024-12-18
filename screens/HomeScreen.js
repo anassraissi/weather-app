@@ -132,26 +132,49 @@ function HomeScreen() {
       setModalVisible(false); // Close the modal when back is pressed
     }}
   >
-    <View style={styles.modalBackground}>
-      <View style={styles.modalContent}>
-        <Text style={styles.modalTitle}>Weather Alert</Text>
+  <View style={styles.modalBackground}>
+    <View style={styles.modalContent}>
+      <Text style={styles.modalTitle}>
+        {alerts?.headline || "Weather Alert"}
+      </Text>
+      
+      {/* Display the event (e.g., "Fog") */}
+      {alerts?.event && (
+        <Text style={styles.modalEvent}>
+          Event: {alerts.event}
+        </Text>
+      )}
+
+      {/* Display the description */}
+      {alerts?.desc && (
         <Text style={styles.modalText}>
-          {alerts?.headline || "No alerts available."}
+          {alerts.desc}
         </Text>
-        <Text style={styles.modalDetails}>
-          {alerts?.certainty || "No additional details."}
+      )}
+
+      {/* Display instructions if available */}
+      {alerts?.instruction && (
+        <Text style={styles.modalInstructions}>
+          Instructions: {alerts.instruction}
         </Text>
-        <TouchableOpacity
-          style={styles.closeButton}
-          onPress={() => setModalVisible(false)}
-        >
-          <Text style={styles.closeButtonText}>Close</Text>
-        </TouchableOpacity>
-      </View>
+      )}
+
+      {/* Optionally display severity, urgency, and certainty */}
+      <Text style={styles.modalDetails}>
+        Severity: {alerts?.severity || "N/A"} | Urgency: {alerts?.urgency || "N/A"} | Certainty: {alerts?.certainty || "N/A"}
+      </Text>
+
+      {/* Close Button */}
+      <TouchableOpacity
+        style={styles.closeButton}
+        onPress={() => setModalVisible(false)}
+      >
+        <Text style={styles.closeButtonText}>Close</Text>
+      </TouchableOpacity>
     </View>
+  </View>
   </Modal>
 </View>
-
     <View style={styles.searchContainer}>
 
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

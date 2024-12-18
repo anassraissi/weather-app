@@ -7,51 +7,52 @@ export const styles = StyleSheet.create({
   
   modalBackground: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   modalContent: {
-    width: '80%',
-    backgroundColor: 'white',
+    backgroundColor: "white",
+    padding: 30,
     borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    width: "90%",
+    alignItems: "center",
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 0,
+  },
+  modalEvent: {
+    fontSize: 16,
+    marginVertical: 10,
   },
   modalText: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 10,
+    fontSize: 14,
+    textAlign: "justify",
+    marginVertical: 5,
+  },
+  modalInstructions: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginVertical: 5,
+    color: "red",
   },
   modalDetails: {
-    fontSize: 14,
-    textAlign: 'center',
-    color: 'gray',
-    marginBottom: 20,
+    fontSize: 12,
+    marginVertical: 5,
+    color: "gray",
   },
   closeButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: "#007BFF",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 5,
-    padding: 10,
-    elevation: 2,
+    marginTop: 15,
   },
   closeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "white",
+    fontWeight: "bold",
   },
   backgroundImage: {
     flex: 1,
@@ -63,7 +64,7 @@ export const styles = StyleSheet.create({
   },
   searchContainer: {
     marginHorizontal: 16,
-    marginTop: 40,
+    marginTop: 30,
     zIndex: 10,
   },
   searchBar: {
@@ -104,7 +105,7 @@ export const styles = StyleSheet.create({
   },
   weatherContainer: {
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 12,
   },
   locationHeading: {
     fontSize: 28,
@@ -153,20 +154,20 @@ export const styles = StyleSheet.create({
   weatherDetailIcon: {
     width: 40,
     height: 40,
-    marginBottom: 10,
+    marginBottom: 0,
   },
   weatherDetailText: {
     color: 'white',
     fontSize: 14,
   },
   dailyForecast: {
-    marginTop: 20,
+    marginTop: 0,
     paddingHorizontal: 16,
   },
   dailyForecastHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 6,
   },
   dailyForecastTitle: {
     marginLeft: 10,
