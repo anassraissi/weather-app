@@ -100,7 +100,7 @@ function FavoritesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 40,
     paddingTop: 50,
   },
   containerLight: {
@@ -156,11 +156,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 80,
+    width: 120,
   },
   weatherImage: {
-    height: 80,
-    width: 80,
+    height: 90,
+    width: 90,
     marginBottom: 1,
   },
   weatherDetails: {
@@ -174,12 +174,12 @@ const styles = StyleSheet.create({
   dailyForecastCondition: {
     fontSize: 14,
     color: 'gray',
-    marginTop: 5,
+    marginTop: 6,
   },
   cardContent: {
     flex: 1,
     justifyContent: 'space-between',
-    marginLeft: 20,
+    marginLeft: 50,
   },
   cardTitle: {
     fontSize: 16,

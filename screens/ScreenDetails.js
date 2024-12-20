@@ -50,11 +50,12 @@ export default function ScreenDetails({ route }) {
 
 const styles = StyleSheet.create({
   container: {
+    top:30,
     flex: 1,
   },
   backButton: {
     position: 'absolute',
-    top: 10,
+    top: 0,
     left: 1,
     zIndex: 1,
     padding: 10,
