@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: "white",
-    padding: 30,
+    padding: 10,
     borderRadius: 10,
     width: "90%",
     alignItems: "center",
@@ -26,6 +26,8 @@ export const styles = StyleSheet.create({
   modalEvent: {
     fontSize: 16,
     marginVertical: 10,
+    color:'orange',
+    fontWeight:'bold'
   },
   modalText: {
     fontSize: 14,
@@ -105,7 +107,7 @@ export const styles = StyleSheet.create({
   },
   weatherContainer: {
     alignItems: 'center',
-    marginTop: 12,
+    marginTop: 15,
   },
   locationHeading: {
     fontSize: 28,
@@ -127,19 +129,19 @@ export const styles = StyleSheet.create({
     marginVertical: 20,
   },
   weatherImage: {
-    width: 300,
-    height: 180,
+    width: 200,
+    height: 140,
   },
   temperatureContainer: {
     alignItems: 'center',
   },
   temperatureText: {
-    fontSize: 64,
+    fontSize: 30,
     fontWeight: 'bold',
     color: 'white',
   },
   weatherDescription: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '400',
     color: theme.bgWhite(0.7),
   },

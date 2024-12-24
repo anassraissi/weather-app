@@ -50,12 +50,12 @@ export default function ScreenDetails({ route }) {
 
 const styles = StyleSheet.create({
   container: {
-    top:30,
+    top:0,
     flex: 1,
   },
   backButton: {
     position: 'absolute',
-    top: 0,
+    top: 30,
     left: 1,
     zIndex: 1,
     padding: 10,
@@ -70,8 +70,9 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   content: {
+    top:70,
     flex: 1,
-    padding: 20,
+    padding: 10,
   },
   title: {
     fontSize: 24,

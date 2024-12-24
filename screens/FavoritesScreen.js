@@ -24,6 +24,14 @@ function FavoritesScreen() {
     }
     fetchWeatherForFavorites();
   }, [favorites]);
+
+  const sendValueToHome = (item) => {
+    navigation.navigate('Home', {
+      screen: 'Home', // Specify the stack screen inside the "Home" tab
+      params: { favoriteLocation: item}, // Pass the parameter
+    });
+  };
+  
   const renderFavoriteCard = ({ item }) => {
     const weather = weatherData[item.name];
     return (
@@ -50,12 +58,15 @@ function FavoritesScreen() {
 
         {/* Right Side: Place Details and Button */}
         <View style={styles.cardContent}>
-          <Text style={[styles.cardTitle, Screentheme === 'dark' && styles.textDark]}>
-            {item.name}
-          </Text>
-          <Text style={[styles.cardSubtitle, Screentheme === 'dark' && styles.textDark]}>
-            {item.country}
-          </Text>
+        <TouchableOpacity onPress={()=>sendValueToHome(item)}>
+              <Text style={[styles.cardTitle, Screentheme === 'dark' && styles.textDark]}>
+              {item.name}
+            </Text>
+            <Text style={[styles.cardSubtitle, Screentheme === 'dark' && styles.textDark]}>
+              {item.country}
+            </Text>
+        </TouchableOpacity>
+
           <TouchableOpacity
             style={[styles.removeButton, Screentheme === 'dark' && styles.removeButtonDark]}
             onPress={() => toggleFavorite(item)}

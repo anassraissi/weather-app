@@ -39,7 +39,7 @@ export default function App() {
                 iconName = 'settings';
               }
 
-              return <Ionicons name={iconName} size={size} color={color} />;
+              return <Ionicons name={iconName} size={28} color={color} />;
             },
             tabBarActiveTintColor: 'tomato',
             tabBarInactiveTintColor: 'gray',

@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native';
+import { useRoute } from '@react-navigation/native';
 import {
   Image,
   SafeAreaView,
@@ -37,9 +38,21 @@ function HomeScreen() {
 
   const { favorites, toggleFavorite, Screentheme, temperatureUnit, changeTemperatureUnit } = useAppContext(); // Access context values
   
+  
+  
   useEffect(() => {
     myLocalisation();
   }, []);
+  
+  const route = useRoute();
+  const favoriteLocation = route.params?.favoriteLocation; // Retrieve the passed parameter
+
+  useEffect(() => {
+    if (favoriteLocation) {
+    handleLocation(favoriteLocation)
+      // Use the value as needed
+    }
+  }, [favoriteLocation]);
   
   const myLocalisation = () => {
     (async () => {
