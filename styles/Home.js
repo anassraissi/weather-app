@@ -4,7 +4,28 @@ import { theme } from '../theme';
 const { width, height } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
-  
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark semi-transparent background
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000, // Ensure it overlays everything
+  },
+  spinnerContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 20,
+    fontSize: 24, // Larger font size
+    fontWeight: 'bold',
+    color: 'silver', // Text color matching spinner
+    textAlign: 'center',
+  },
   modalBackground: {
     flex: 1,
     justifyContent: "center",

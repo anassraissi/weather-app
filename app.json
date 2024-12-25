@@ -15,14 +15,25 @@
     "ios": {
       "supportsTablet": true
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
-    },
+        "android": {
+          "package": "com.anass_raissi.weatherapp",
+          "permissions": [
+            "INTERNET",
+            "ACCESS_NETWORK_STATE"
+          ],
+          "useCleartextTraffic": true,
+          "adaptiveIcon": {
+            "foregroundImage": "./assets/adaptive-icon.png",
+            "backgroundColor": "#ffffff"
+          }
+        },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "aa0a46ff-4ff0-41c4-90a7-ffc2486435ca"
+      }
     }
   }
 }
